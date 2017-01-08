@@ -10,7 +10,19 @@
 _start:
 
 
-/*Lege BCM5 als Input und BCM23 und BCM24 als Output fest*/
+/*
+Registerzuweisungen:
+r0 = Anfangsadresse des GPIO Controllers
+r1 = Maske für das Setzen der Output-Funktion für FSEL23 und FSEL24
+r2 = Maske für BCM 5; Test ob Bit gesetzt
+r3 = Und-Ergebnis des Bittests
+r4 = Zähler Tastenbetätigungen
+r5 = Clock
+r6 = Maske für das Setzen der Output GPIOs BCM23 und BCM24
+r10 = Programmablauf
+*/
+
+/*Lege BCM5 als Input (default) und BCM23 und BCM24 als Output fest*/
 	ldr r0, =0x202000000;		//lade anfangsadresse des GPIO Controllers, weiterer Zugriff mit Offset
 	mov r1, #9;					//9=1001, in das Register GPFSEL2 nach links schieben um 9 Stellen
 								//letzte 1 von 1001 muss am ende bei FSEL23 an letzter Stelle stehen
