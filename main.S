@@ -5,10 +5,12 @@
  *      Author: Lukas Bachamnn <lukas.bachmann0610@gmail.com>
  */
 
-.section .init
-.globl _start
-_start:
 
+.global main
+.func main
+main:
+
+  push {r4-r11, lr}
 
 /*
 Registerzuweisungen:
@@ -38,6 +40,7 @@ begin:
 	cmp r3, #0
 	beq begin;
 loop:
+
 	ldr r10, [r0, #76];
 	and r3, r2, r10;				//Bit 5 maskieren
 	nop;
@@ -56,11 +59,11 @@ time:
 	cmp r5, #2000;					//r5 enthält einen Timer; bei 2 sec Schleife verlassen
 	blt loop;
 
-wait:								//warten bis zum Leuchten
+WAIT_1:								//warten bis zum Leuchten
 	add r5, #1;
 	nop;
 	cmp r5, #500;					//5 sec timer
-	blt wait;
+	blt WAIT_1;
 	mov r5, #0;						//timer reseten
 	mov r8, r4;						//Zähler für LED2
 
@@ -78,9 +81,8 @@ WAIT_2:
 	cmp r5, #500;
 	blt WAIT_2;
 	mov r5, #0;
-	str r10, [r0, #28];
-	and r10, r10, #0;				//alle Outputs auf 0; LED aus
-	str r10, [r0, #28];
+	str r6, [r0, #40];				//alle Outputs auf 0; LED aus; clear register
+
 	WAIT_3:							//LED gönnt sich Auszeit
 		add r5, #1;
 		nop;
@@ -91,7 +93,7 @@ WAIT_2:
 	bne	LED_1;
 	cmp r8, #0;
 	bne LED_2;
-	b _start;
+	b main_loop;
 
 LED_2:
 	mov r6, #1;					//Bit 23 muss auf 1 gesetzt werden;
@@ -100,3 +102,7 @@ LED_2:
 	sub r8, #1;
 	b	WAIT_2;
 
+end_start:
+  mov r0, #0
+  pop {r4-r11, pc}
+.endfunc
