@@ -7,11 +7,7 @@
 
 
 .global main
-.func main
 main:
-
-  push {r4-r11, lr}
-
 /*
 Registerzuweisungen:
 r0 = Anfangsadresse des GPIO Controllers
@@ -24,6 +20,8 @@ r6 = Maske für das Setzen der Output GPIOs BCM23 und BCM24
 */
 
 /*Lege BCM5 als Input (default) und BCM23 und BCM24 als Output fest*/
+
+
 	ldr r0, =0x20200000;			//lade anfangsadresse des GPIO Controllers, weiterer Zugriff mit Offset
 	mov r1, #9;						//9=1001, in das Register GPFSEL2 nach links schieben um 9 Stellen
 									//letzte 1 von 1001 muss am ende bei FSEL23 an letzter Stelle stehen
@@ -56,13 +54,13 @@ loop:
 time:
 	add r5, #1						//Zeitfunktion hier einfügen
 	nop;
-	cmp r5, #2000;					//r5 enthält einen Timer; bei 2 sec Schleife verlassen
+	cmp r5, #200;					//r5 enthält einen Timer; bei 2 sec Schleife verlassen
 	blt loop;
 
 WAIT_1:								//warten bis zum Leuchten
 	add r5, #1;
 	nop;
-	cmp r5, #500;					//5 sec timer
+	cmp r5, #50;					//5 sec timer
 	blt WAIT_1;
 	mov r5, #0;						//timer reseten
 	mov r8, r4;						//Zähler für LED2
@@ -78,7 +76,7 @@ LED_1:
 WAIT_2:
 	add r5, #1;
 	nop;
-	cmp r5, #500;
+	cmp r5, #50;
 	blt WAIT_2;
 	mov r5, #0;
 	str r6, [r0, #40];				//alle Outputs auf 0; LED aus; clear register
@@ -86,7 +84,7 @@ WAIT_2:
 	WAIT_3:							//LED gönnt sich Auszeit
 		add r5, #1;
 		nop;
-		cmp r5, #500;
+		cmp r5, #50;
 		blt WAIT_3;
 		mov r5, #0;
 	cmp r4, #0;
@@ -104,5 +102,4 @@ LED_2:
 
 end_start:
   mov r0, #0
-  pop {r4-r11, pc}
-.endfunc
+
